@@ -1,10 +1,15 @@
 require("dotenv").config();
 import express, { Express, Request, Response } from "express";
+import fileupload from "express-fileupload";
 import cors from "cors";
 import bodyParser from "body-parser";
 import imgbbUploader from "imgbb-uploader";
 import path from "path";
 import fs from "fs";
+
+interface UploadedFile extends fileupload.UploadedFile {
+  path: string;
+}
 
 const app: Express = express();
 const port = process.env.PORT;
@@ -13,8 +18,9 @@ const port = process.env.PORT;
 
 console.log("path", path.join(__dirname, "public"));
 
-app.use(express.static("public"));
 app.use(cors());
+app.use(fileupload());
+app.use(express.static("public"));
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
@@ -39,7 +45,7 @@ app.get("/track/:id", (req: Request, res: Response) => {
   readStream.pipe(res);
 });
 
-app.post("/api/upload", async (req: Request, res: Response) => {
+app.post("/upload/profile/image", async (req: Request, res: Response) => {
   try {
     const { image, userId } = req.body;
     const data = await imgbbUploader({
@@ -48,9 +54,44 @@ app.post("/api/upload", async (req: Request, res: Response) => {
       base64string: image.replace(/^data:image\/[a-z]+;base64,/, ""),
     });
 
-    console.log("data", data);
-
     res.status(200).json(data.display_url);
+  } catch (error) {
+    console.log("error", error);
+  }
+});
+
+app.post("/upload/tracks", async (req: Request, res: Response) => {
+  try {
+    const { title, artist, album } = req.body;
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res.status(400).send("No files were uploaded.");
+    }
+    if (req.files) {
+      const filePath = path.resolve(__dirname, "../public");
+      const image = {
+        ...req.files.image,
+        path: `${filePath}/images/${artist} - ${title}`,
+      } as UploadedFile;
+
+      const audio = {
+        ...req.files.audio,
+        path: `${filePath}/audio/${artist} - ${title}`,
+      } as UploadedFile;
+
+      const files: UploadedFile[] = [image, audio];
+
+      for (let i = 0; i < files.length; i++) {
+        files[i].mv(
+          `${files[i].path}.${files[i].mimetype.split("/")[1]}`,
+          function (err: Error) {
+            if (err) {
+              res.send(err);
+            }
+          }
+        );
+      }
+      res.send("files uploaded");
+    }
   } catch (error) {
     console.log("error", error);
   }

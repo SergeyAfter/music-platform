@@ -31,7 +31,7 @@ services:
       context: ./client
       dockerfile: Dockerfile
     env_file:
-      - ./client/.env.local
+      - ./client/.env
     volumes:
       - /app/node_modules
       - ./client/src:/app/src

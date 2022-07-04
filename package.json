@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "docker:build": "docker-compose -p {name} build",
-    "docker:down": "docker-compose -p {name} down",
-    "docker:up": "docker-compose -p {name} up",
+    "docker:build": "docker-compose -p music-platform build",
+    "docker:down": "docker-compose -p music-platform down",
+    "docker:up": "docker-compose -p music-platform up",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

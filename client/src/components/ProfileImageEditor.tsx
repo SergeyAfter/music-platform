@@ -37,7 +37,7 @@ const ProfileImageEditor: React.FC<ProfileImageEditorProps> = ({
       const croppedImg = canvasScaled.toDataURL();
       if (user && user.sub) {
         try {
-          const url = `${process.env.REACT_APP_API_URL}/upload`;
+          const url = `${process.env.REACT_APP_API_URL}/upload/profile/image`;
           const { data: imageUrl } = await axios.post(url, {
             image: croppedImg,
             userId: user.sub,

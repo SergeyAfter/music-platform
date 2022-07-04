@@ -32,12 +32,12 @@ const UploadTrackPage = () => {
   const handleSubmit = async (e: any) => {
     const formData = new FormData();
     formData.append("image", track.image);
-    formData.append("audio", track.image);
+    formData.append("audio", track.audio);
     formData.append("title", track.title);
     formData.append("artist", track.artist);
     formData.append("album", track.album);
 
-    const url = process.env.REACT_APP_API_URL;
+    const url = `${process.env.REACT_APP_API_URL}/upload/tracks`;
     const { data } = await axios.post(url, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
