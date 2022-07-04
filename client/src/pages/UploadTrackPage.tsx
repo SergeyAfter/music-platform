@@ -7,21 +7,38 @@ const UploadTrackPage = () => {
   const [track, setTrack] = useState<ITrack>({
     title: "$orries",
     artist: "Peachy!",
-    album: " Shiloh",
-    image: ``,
-    audio: ``,
+    album: "Shiloh",
+    image: "",
+    audio: "",
   });
 
-  const handleChange = (e: any, key: string) => {
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
     setTrack({
       ...track,
-      [key]: e.currentTarget.value,
+      [name]: value,
     });
   };
 
-  const handleSubmit = async () => {
+  const handleChangeFile = (e: any) => {
+    const { name, files } = e.target;
+
+    setTrack({
+      ...track,
+      [name]: files[0],
+    });
+  };
+
+  const handleSubmit = async (e: any) => {
+    const formData = new FormData();
+    formData.append("image", track.image);
+    formData.append("audio", track.image);
+    formData.append("title", track.title);
+    formData.append("artist", track.artist);
+    formData.append("album", track.album);
+
     const url = process.env.REACT_APP_API_URL;
-    const { data } = await axios.post(url, track, {
+    const { data } = await axios.post(url, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -36,18 +53,20 @@ const UploadTrackPage = () => {
           type="text"
           placeholder="Enter artist"
           value={track.artist}
-          onChange={(e) => handleChange(e, "artist")}
+          name="artist"
+          onChange={handleChange}
           required={true}
         />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Name</Form.Label>
+        <Form.Label>Title</Form.Label>
         <Form.Control
           type="text"
           placeholder="Enter name"
           value={track.title}
-          onChange={(e) => handleChange(e, "name")}
+          name="title"
+          onChange={handleChange}
           required={true}
         />
       </Form.Group>
@@ -58,7 +77,8 @@ const UploadTrackPage = () => {
           type="text"
           placeholder="Enter album name"
           value={track.album}
-          onChange={(e) => handleChange(e, "album")}
+          name="album"
+          onChange={handleChange}
           required={true}
         />
       </Form.Group>
@@ -68,7 +88,8 @@ const UploadTrackPage = () => {
         <Form.Control
           type="file"
           accept="image/*"
-          onChange={(e) => handleChange(e, "image")}
+          name="image"
+          onChange={handleChangeFile}
           required={true}
         />
       </Form.Group>
@@ -78,13 +99,13 @@ const UploadTrackPage = () => {
         <Form.Control
           type="file"
           accept="audio/*"
-          value={track.audio}
-          onChange={(e) => handleChange(e, "audio")}
+          name="audio"
+          onChange={handleChangeFile}
           required={true}
         />
       </Form.Group>
 
-      <Button variant="primary" type="submit" onSubmit={handleSubmit}>
+      <Button variant="primary" type="button" onClick={handleSubmit}>
         Submit
       </Button>
     </Form>

@@ -1,29 +1,29 @@
 import React from "react";
 import ITrack from "../interfaces/Track";
 
-interface NextSongProps {
-  song: ITrack;
+interface NextTrackProps {
+  track: ITrack;
 }
 
-const NextSong: React.FC<NextSongProps> = ({ song }) => {
+const NextTrack: React.FC<NextTrackProps> = ({ track }) => {
   return (
     <div className="nextsong-container">
-      <div className="nextsong-header">Upcoming Song:</div>
+      <div className="nextsong-header">Upcoming Track:</div>
 
       <div className="nextsong-details">
         <img
           className="nextsong-details-img"
-          src={song.image}
-          alt={song.title}
+          src={track.image}
+          alt={track.title}
         />
         <div className="nextsong-details-text">
           <div className="nextsong-details-text-title">
-            <b>{song.title}</b> by
+            <b>{track.title}</b> by
           </div>
-          <div>{song.artist}</div>
+          <div>{track.artist}</div>
           <div>from album</div>
           <div>
-            <b>{song.album}</b>
+            <b>{track.album}</b>
           </div>
         </div>
       </div>
@@ -31,4 +31,4 @@ const NextSong: React.FC<NextSongProps> = ({ song }) => {
   );
 };
 
-export default NextSong;
+export default NextTrack;

@@ -28,7 +28,9 @@ const NavbarPanel = () => {
         <LinkContainer to="/player">
           <Nav.Link>Player</Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/add">
+        <LinkContainer
+          to={`/profile/${user?.sub?.replace("auth0|", "")}/tracks/upload`}
+        >
           <Nav.Link>Upload</Nav.Link>
         </LinkContainer>
         <Navbar.Collapse className="justify-content-end">

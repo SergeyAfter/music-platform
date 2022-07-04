@@ -10,13 +10,14 @@ const Router = () => {
     <Routes>
       <Route path="/" element={<MainPage />} />
       <Route path="/player" element={<PlayerPage />} />
-      <Route
-        path="/add"
-        element={<ProtectedRoute component={UploadTrackPage} />}
-      />
+
       <Route
         path="/profile/:id"
         element={<ProtectedRoute component={ProfilePage} />}
+      />
+      <Route
+        path="/profile/:id/tracks/upload"
+        element={<ProtectedRoute component={UploadTrackPage} />}
       />
     </Routes>
   );
