@@ -1,0 +1,52 @@
+import { useEffect, useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+
+const useAuth0Api = (url: string, options: any = {}) => {
+  const { getAccessTokenSilently } = useAuth0();
+  const [state, setState] = useState<{
+    error: object | null;
+    loading: boolean;
+    data: object | null;
+  }>({
+    error: null,
+    loading: true,
+    data: null,
+  });
+  const [refreshIndex, setRefreshIndex] = useState(0);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { audience, scope, ...fetchOptions } = options;
+        const accessToken = await getAccessTokenSilently({ audience, scope });
+        const res = await fetch(url, {
+          ...fetchOptions,
+          headers: {
+            ...fetchOptions.headers,
+            // Add the Authorization header to the existing headers
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setState({
+          ...state,
+          data: await res.json(),
+          error: null,
+          loading: false,
+        });
+      } catch (error) {
+        setState({
+          ...state,
+          error: error as object,
+          loading: false,
+        });
+      }
+    })();
+  }, [refreshIndex]);
+
+  return {
+    ...state,
+    refresh: () => setRefreshIndex(refreshIndex + 1),
+  };
+};
+
+export default useAuth0Api;
