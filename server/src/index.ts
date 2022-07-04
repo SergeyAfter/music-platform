@@ -1,5 +1,4 @@
 require("dotenv").config();
-// require("url").URL;
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";

@@ -1,7 +1,7 @@
 import { useState, useLayoutEffect } from "react";
-import ISong from "../interfaces/Song";
+import ITrack from "../interfaces/Track";
 
-const useAudioPlayer = (song: ISong, audio: HTMLAudioElement | null) => {
+const useAudioPlayer = (song: ITrack, audio: HTMLAudioElement | null) => {
   const [duration, setDuration] = useState<number>(0);
   const [curTime, setCurTime] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState(false);

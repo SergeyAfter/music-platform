@@ -28,7 +28,9 @@ const NavbarPanel = () => {
         <LinkContainer to="/player">
           <Nav.Link>Player</Nav.Link>
         </LinkContainer>
-        <Navbar.Toggle />
+        <LinkContainer to="/add">
+          <Nav.Link>Upload</Nav.Link>
+        </LinkContainer>
         <Navbar.Collapse className="justify-content-end">
           {isAuthenticated ? (
             <NavDropdown title={UserMenu}>

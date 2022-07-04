@@ -1,30 +1,30 @@
 import React, { useRef, useState, useEffect, useLayoutEffect } from "react";
 import PlayerDetails from "../components/PlayerDetails";
 import PlayerControls from "../components/PlayerControls";
-import ISong from "../interfaces/Song";
+import ITrack from "../interfaces/Track";
 import NextSong from "../components/NextSong";
 import PlayerFooter from "../components/PlayerFooter";
 import useAudioPlayer from "../hooks/useAudioPlayer";
-import defaultSongs from "../constants/songs";
+import defaultTracks from "../constants/tracks";
 
 const PlayerPage = () => {
-  const [songs, setSongs] = useState<ISong[]>(defaultSongs);
+  const [tracks, setTracks] = useState<ITrack[]>(defaultTracks);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [nextSongIndex, setNextSongIndex] = useState(0);
 
   useEffect(() => {
     setNextSongIndex(() => {
-      if (currentSongIndex + 1 > songs.length - 1) {
+      if (currentSongIndex + 1 > tracks.length - 1) {
         return 0;
       } else {
         return currentSongIndex + 1;
       }
     });
-  }, [currentSongIndex, songs.length]);
+  }, [currentSongIndex, tracks.length]);
 
   const audioElement = useRef<HTMLAudioElement>(null);
   const { curTime, duration, isPlaying, setIsPlaying, setClickedTime } =
-    useAudioPlayer(songs[currentSongIndex], audioElement.current);
+    useAudioPlayer(tracks[currentSongIndex], audioElement.current);
 
   useLayoutEffect(() => {
     if (isPlaying) {
@@ -39,11 +39,11 @@ const PlayerPage = () => {
     if (forwards) {
       temp++;
 
-      if (temp > songs.length - 1) temp = 0;
+      if (temp > tracks.length - 1) temp = 0;
     } else {
       temp--;
 
-      if (temp < 0) temp = songs.length - 1;
+      if (temp < 0) temp = tracks.length - 1;
     }
     setCurrentSongIndex(temp);
   };
@@ -51,15 +51,15 @@ const PlayerPage = () => {
 
   return (
     <div className="music-player-container">
-      {songs.length > 1 && <NextSong song={songs[nextSongIndex]} />}
+      {tracks.length > 1 && <NextSong song={tracks[nextSongIndex]} />}
       <div className="music-player">
         <audio
           ref={audioElement}
-          src={songs[currentSongIndex].src}
+          src={tracks[currentSongIndex].audio}
           preload="metadata"
         ></audio>
         <PlayerDetails
-          song={songs[currentSongIndex]}
+          track={tracks[currentSongIndex]}
           progressBarInfo={{ duration, curTime, onTimeUpdate }}
         />
 

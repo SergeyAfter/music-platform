@@ -1,15 +1,15 @@
 import React from "react";
-import ISong from "../interfaces/Song";
+import ITrack from "../interfaces/Track";
 import ProgressBar from "./ProgressBar";
 import ProgressBarProps from "../interfaces/ProgressBarProps";
 
 interface PlayerDetailsProps {
-  song: ISong;
+  track: ITrack;
   progressBarInfo: ProgressBarProps;
 }
 
 const PlayerDetails: React.FC<PlayerDetailsProps> = ({
-  song,
+  track,
   progressBarInfo,
 }) => {
   return (
@@ -17,8 +17,8 @@ const PlayerDetails: React.FC<PlayerDetailsProps> = ({
       <div className="details-img">
         <img
           className="details-img--image"
-          src={song.img_src}
-          alt={song.title}
+          src={track.image}
+          alt={track.title}
         />
       </div>
       <ProgressBar
@@ -27,8 +27,8 @@ const PlayerDetails: React.FC<PlayerDetailsProps> = ({
         onTimeUpdate={progressBarInfo.onTimeUpdate}
       />
       <div className="artist-info">
-        <h3 className="details-title">{song.title}</h3>
-        <h4 className="details-artist">{song.artist}</h4>
+        <h3 className="details-title">{track.title}</h3>
+        <h4 className="details-artist">{track.artist}</h4>
         <div className="line"></div>
       </div>
     </div>

@@ -1,8 +1,8 @@
 import React from "react";
-import ISong from "../interfaces/Song";
+import ITrack from "../interfaces/Track";
 
 interface NextSongProps {
-  song: ISong;
+  song: ITrack;
 }
 
 const NextSong: React.FC<NextSongProps> = ({ song }) => {
@@ -13,7 +13,7 @@ const NextSong: React.FC<NextSongProps> = ({ song }) => {
       <div className="nextsong-details">
         <img
           className="nextsong-details-img"
-          src={song.img_src}
+          src={song.image}
           alt={song.title}
         />
         <div className="nextsong-details-text">
