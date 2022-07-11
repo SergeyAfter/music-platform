@@ -6,10 +6,16 @@
   "scripts": {
     "docker:build": "docker-compose -p music-platform build",
     "docker:down": "docker-compose -p music-platform down",
+    "docker:down:app": "docker-compose -p music-platform down api",
     "docker:up": "docker-compose -p music-platform up",
+    "docker:up:db": "docker-compose -p music-platform up -d pgadmin",
+    "docker:up:app": "docker-compose -p music-platform up web_app",
+    "docker:up:api": "docker-compose -p music-platform up api",
+    "rabbit:up": "docker-compose -p music-platform up -d rabbitmq",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {}
 }

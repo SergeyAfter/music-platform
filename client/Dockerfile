@@ -1,21 +1,25 @@
-FROM node:16
-#By default create-react-app sets port to 3000
-EXPOSE 3000
-#mkdir - make directories
-# -p, --parents  - no error if existing, make parent directories as needed
-RUN mkdir -p /app/public /app/src
+FROM node:16-alpine AS builder
+
+ENV NODE_ENV production
+
 WORKDIR /app
 
-#ignore if don't have react with typescript
-COPY tsconfig.json /app/tsconfig.json
+COPY package.json .
+COPY package-lock.json .
 
-#ignore if don't have react with typescript
-# COPY tslint.json /app/tslint.json 
+RUN npm i
 
-COPY package.json /app/package.json
-COPY package-lock.json /app/package-lock.json
-## install only the packages defined in the package-lock.json (faster than the normal npm install)
-RUN npm install
+COPY . .
 
-# Run 'npm run dev' when the container starts.
-CMD ["npm", "run", "start"]
+RUN npm run build
+
+FROM nginx:stable-alpine as runner
+
+ENV NODE_ENV production
+
+COPY --from=builder /app/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 3000
+
+CMD ["nginx", "-g", "daemon off;"]

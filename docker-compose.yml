@@ -3,6 +3,8 @@ services:
   postgres:
     container_name: music-platform-postgres
     image: postgres:14.1-alpine
+    hostname: postgres
+    restart: always
     ports:
       - "5432:5432"
     environment:
@@ -12,19 +14,70 @@ services:
     volumes:
       - ./postgresql/data:/var/lib/postgresql/data
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "pgadmin@megacorp.com"
+      PGADMIN_DEFAULT_PASSWORD: "s3kr1t_p455w0rd"
+    ports:
+      - "16543:80"
+    depends_on:
+      - postgres
+
+  rabbitmq:
+    image: rabbitmq:3.9-management
+    hostname: rabbitmq
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/
+      - rabbitmq_log:/var/log/rabbitmq/
+
   api:
     container_name: music-platform-api
+    restart: always
     build:
-      context: ./server
+      context: ./api
       dockerfile: Dockerfile # on move to prod, update this
     volumes:
-      - /app/node_modules
-      - ./server/src:/app/src
-      - ./server/public:/app/public
+      - ./api/src:/app/src
+      - ./api/dist:/app/dist
+      - /api/node_modules
+      - ./api/nodemon.json:/home/node/app/nodemon.json
     env_file:
-      - ./server/.env
+      - ./api/.env
     ports:
       - "5000:5000"
+    depends_on:
+      - rabbitmq
+      - postgres
+
+  upload:
+    container_name: music-platform-upload
+    restart: always
+    build:
+      context: ./upload
+      dockerfile: Dockerfile # on move to prod, update this
+    volumes:
+      - /upload/node_modules
+      - ./upload/src:/app/src
+    env_file:
+      - ./upload/.env
+    ports:
+      - "5001:5001"
+    depends_on:
+      - api
+      - rabbitmq
+
   web_app:
     container_name: music-platform-web_app
     build:
@@ -33,19 +86,13 @@ services:
     env_file:
       - ./client/.env
     volumes:
-      - /app/node_modules
+      - /client/node_modules
       - ./client/src:/app/src
-      - ./client/public:/app/public
-      - ./client/.env:/app/.env
     ports:
       - "3000:3000"
-  pgadmin-compose:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: "pgadmin@megacorp.com"
-      PGADMIN_DEFAULT_PASSWORD: "s3kr1t_p455w0rd"
-    ports:
-      - "16543:80"
     depends_on:
-      - postgres
+      - api
+
+volumes:
+  rabbitmq_data:
+  rabbitmq_log:

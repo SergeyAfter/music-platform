@@ -37,7 +37,7 @@ const UploadTrackPage = () => {
     formData.append("artist", track.artist);
     formData.append("album", track.album);
 
-    const url = `${process.env.REACT_APP_API_URL}/upload/tracks`;
+    const url = `${process.env.REACT_APP_API_URL}/api/tracks`;
     const { data } = await axios.post(url, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
